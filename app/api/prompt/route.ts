@@ -1,10 +1,29 @@
 import { connectToDB } from "@utils/database";
 import Prompt from "@models/prompt";
 
-export const GET = async (req: Request) => {
+export const GET = async () => {
   try {
     await connectToDB();
     const prompts = await Prompt.find({}).populate("creator");
+
+    return new Response(JSON.stringify(prompts), { status: 200 });
+  } catch (error) {
+    console.log(error);
+    return new Response("Failed to fetch prompts", { status: 500 });
+  }
+};
+
+export const POST = async (req: Request) => {
+  const { searchKey } = await req.json();
+  try {
+    await connectToDB();
+    const prompts = await Prompt.find()
+      .or([
+        { "creator.email": { $regex: `.*${searchKey.toLowerCase()}.*` } },
+        { prompt: { $regex: `.*${searchKey.toLowerCase()}.*` } },
+        { tag: { $regex: `.*${searchKey.toLowerCase()}.*` } },
+      ])
+      .populate("creator");
 
     return new Response(JSON.stringify(prompts), { status: 200 });
   } catch (error) {

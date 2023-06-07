@@ -5,8 +5,8 @@ type Props = {
   name: string;
   desc: string;
   data: any[];
-  handleEdit: (post: any) => void;
-  handleDelete: (post: any) => Promise<void>;
+  handleEdit?: (post: any) => void;
+  handleDelete?: (post: any) => Promise<void>;
 };
 
 const Profile = ({ name, desc, data, handleEdit, handleDelete }: Props) => {
@@ -18,7 +18,7 @@ const Profile = ({ name, desc, data, handleEdit, handleDelete }: Props) => {
       <p className="desc text-left">{desc}</p>
       <div className="mt-16 prompt_layout">
         {data.map((post) => (
-          <PromptCard key={post._id} post={post} handleEdit={() => handleEdit(post)} handleDelete={() => handleDelete(post)} />
+          <PromptCard key={post._id} post={post} handleEdit={() => handleEdit?.(post)} handleDelete={() => handleDelete?.(post)} />
         ))}
       </div>
     </section>
